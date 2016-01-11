@@ -1,8 +1,8 @@
 {
   "name": "cerebral-form",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "A boilerplate for Cerebral",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tnrich/cerebral-form.git"
@@ -29,15 +29,14 @@
   "scripts": {
     "test": "",
     "start": "babel-node server",
-    "build": "rimraf dist && NODE_ENV=production webpack --config ./webpack.production.config.js --progress --profile --colors",
+    "build": "rimraf lib && babel src --out-dir lib",
     "eslint": "eslint .",
-    "jscs": "jscs ."
-  },
-  "dependencies": {
-    "cerebral-view-react": "^0.10.0",
-    "react": "^0.14.3"
+    "jscs": "jscs .",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
+    "cerebral-view-react": "^0.10.0",
+    "react": "^0.14.3",
     "autoprefixer": "^6.0.3",
     "babel": "^5.8.23",
     "babel-loader": "^5.3.2",
