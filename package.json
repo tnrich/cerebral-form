@@ -1,6 +1,6 @@
 {
   "name": "cerebral-form",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A boilerplate for Cerebral",
   "main": "server.js",
   "repository": {

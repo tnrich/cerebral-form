@@ -34,9 +34,10 @@ A list of available props available to the input are:
 - visited: true
 
 ##Checking if a form has been completed: 
+```
 import {formCompleted} from 'cerebral-form'; //this is a cerebral computed function
 @Cerebral(formCompleted: formCompleted('form1')}) //use it like a normal computed function, passing the name of the form
-
+```
 
 ##Hooking up the module + setting up validation: 
 ```js
