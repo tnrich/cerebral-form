@@ -3,7 +3,7 @@ export default (options = {}) => {
 	var validationNames = [];
 	Object.keys(asyncValidation).forEach(function(key) {
 		validationNames.push(key)
-		asyncValidation[key] = [[asyncValidation[key]]]
+		// asyncValidation[key] = asyncValidation[key]
 		asyncValidation['noValidationGiven%%'] = []
 		validationNames.push('noValidationGiven%%')
 	})
@@ -71,9 +71,6 @@ export default (options = {}) => {
 			setValue, {
 				shouldValidate: [
 					doSimpleValidation,
-					//tnr: we should probably only do async validation on blur events..
-					// chooseAsyncValidationPath,
-					// asyncValidation,
 					chooseAsyncValidationPath,
 					asyncValidation,
 					setErrors

@@ -6,9 +6,9 @@ import Controller from 'cerebral';
 import Model from 'cerebral-model-baobab';
 import ObjectInspector from 'react-object-inspector';
 import validator from 'validator';
-import CerebralForm, {formCompleted} from '../CerebralForm';
 import InputWrapper from '../CerebralForm/InputWrapper';
 var controller = Controller(Model({}));
+import CerebralForm, {formCompleted} from '../CerebralForm';
 
 controller.modules({
 	cerebralForm: CerebralForm({
@@ -24,22 +24,24 @@ controller.modules({
 			}
 		},
 		asyncValidation: {
-			isNonGmail: function({
-				input, output
-			}) {
-				//fake talking to backend
-				setTimeout(function(argument) {
-					if (input.value.indexOf('gmail') > -1) {
-						output({
-							asyncError: {
-								message: 'The email ' + input.value + ' cannot have gmail in the name'
-							}
-						})
-					} else {
-						output()
-					}
-				}, 300)
-			}
+      isNonGmail: [
+        [function({
+          input, output
+        }) {
+          //fake talking to backend
+          setTimeout(function() {
+            if (input.value.indexOf('gmail') > -1) {
+              output({
+                asyncError: {
+                  message: 'The email ' + input.value + ' cannot have gmail in the name'
+                }
+              })
+            } else {
+              output()
+            }
+          }, 300)
+        }]
+      ]
 		}
 	}),
 });
@@ -56,7 +58,15 @@ var Input1 = InputWrapper(function Input1 (props) {
 
     </div>
     );
-}, {path: ['path'], form: 'form1',  validateImmediately: false, asyncValidation: 'isNonGmail', validations:{'isEmail': "Please provide a valid email"}})
+}, {
+  path: ['path'],
+  form: 'form1',
+  validateImmediately: false,
+  asyncValidation: 'isNonGmail',
+  validations: {
+    'isEmail': "Please provide a valid email"
+  }
+})
 
 var ShowAnotherGroupOfInputs = InputWrapper(function ShowAnotherGroupOfInputs (props) {
   return (

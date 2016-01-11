@@ -5,7 +5,7 @@
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cerebral/cerebral-form.git"
+    "url": "git+https://github.com/cerebral/cerebral-form.git"
   },
   "keywords": [
     "cerebral",
@@ -64,5 +64,8 @@
     "webpack": "^1.12.2",
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.2.0"
+  },
+  "directories": {
+    "example": "example"
   }
 }
