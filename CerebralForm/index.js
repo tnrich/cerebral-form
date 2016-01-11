@@ -42,18 +42,24 @@ export default (options = {}) => {
 		module.alias('cerebralModuleForm');
 		module.signals({
 		init: [function({input, state}) {
-			if (!state.get(input.path)) {
+			var inputState = state.get(input.path);
+			if (!inputState) {
 				state.set([...input.path], {
 					value: input.defaultValue,
-					completed: input.defaultValue ? true : false
+					completed: input.defaultValue ? true : false,
+					cerebralFormId: input.cerebralFormId
 				})
+			} else {
+				if (inputState.cerebralFormId !== input.cerebralFormId) {
+					console.warn('Careful! A new input is being initialized with the same path as a previous input');
+				}
 			}
 		}],
 		addToForm: [function({input, state}) {
 			var forms = input.form
 			if (!Array.isArray(input.form)) {
 				forms = [input.form]
-			} 
+			}
 			forms.forEach(function(form){
 				state.set(['cerebralForm', form, 'paths', input.path.join('%.%')],true)
 			});
@@ -64,7 +70,7 @@ export default (options = {}) => {
 				forms = [input.form]
 			}
 			forms.forEach(function(form){
-				state.unset(['cerebralForm', form, 'paths', input.path.join('%.%')],true)
+				state.unset(['cerebralForm', form, 'paths', input.path.join('%.%')])
 			});
 		}],
 		change: [

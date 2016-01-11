@@ -72,12 +72,12 @@ var ShowAnotherGroupOfInputs = InputWrapper(function ShowAnotherGroupOfInputs (p
   return (
     <div>
     <br/>
-      <h3>Input props: </h3>
+    <h3>Input props: </h3>
       <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ props } />
       <br/>
       <radiogroup onChange={props.onChange}>
-        <input type="radio" name="showOthers" value="showMore" checked={props.value==="showMore"}/> Show More <br/>
-        <input type="radio" name="showOthers" value="showLess" checked={props.value==="showLess"}/> Show Less<br/>
+        <input type="radio" name="showOthers" value="showMore" checked={props.value==="showMore"}/> Add additional form elements <br/>
+        <input type="radio" name="showOthers" value="showLess" checked={props.value==="showLess"}/> Don't add them<br/>
       </radiogroup>
     </div>
     );
@@ -87,7 +87,7 @@ var Input2 = InputWrapper(function Input2 (props) {
   return (
     <div>
     <br/>
-      <h3>Input props: </h3>
+    <h3>Input props: </h3>
       <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ props } />
       <br/>
       <radiogroup onChange={props.onChange}>
@@ -138,7 +138,8 @@ class FormExample extends React.Component {
           </div>
         }
         <br/>
-        <h3>Component props:</h3>
+        Completed? {this.props.formCompleted ? ' true' : ' false'}
+        <h3>Component props: </h3>
         <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ this.props } />
         <button disabled={!this.props.formCompleted}>Submit</button>
       </div>

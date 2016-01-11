@@ -1,5 +1,8 @@
 #Cerebral Form
 
+##Philosophy:
+The inputs are first class citizens, not the "form". You determine where their state lives, and what forms, if any, they connect to. 
+
 ##Usage:
 `npm i -S cerebral-form`
 
@@ -11,8 +14,8 @@ var MyInput = InputWrapper(function MyInput (props) {
         </input>
     );
 },{
-  path: ['path','you','choose'], //input state stored at this path
-  form: 'form1', //or  ['form1','form2'] //if the input is part of a larger form
+  path: ['path','you','choose'], //the only required property. Input state is stored at this path
+  form: 'form1', //or  ['form1','form2'] if the input is part of a larger form
   validation: {
     'isEmail': "Please provide a valid email" //name and message of desired validation
     'userDefined': "This field must match another user defined field"
@@ -53,7 +56,7 @@ controller.modules({
 				}
 			}, 
 			userDefined: function (value, state) {
-				if (value.indexOf(state.get('userDefinedString')) > -1) {
+				if (value === state.get('userDefinedString')) {
 					return true
 				} else {
 					return false

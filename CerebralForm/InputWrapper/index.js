@@ -3,6 +3,8 @@ import {HOC} from 'cerebral-view-react';
 import React, { Component } from "react";
 //take in a user component
 export default function InputWrapper (ComposedComponent, options) {
+  var cerebralFormId = guid();
+  options = {...options, cerebralFormId}
   //wrap a helper component in cerebral's HOC
   return HOC(class Connector extends Component {
       componentWillMount() {
@@ -37,4 +39,14 @@ export default function InputWrapper (ComposedComponent, options) {
     cerebralInput: options.path,
     //we could also take in other user-defined cerebral bindings here, but it seems like they can just wrap with cerebral like normal if they need to
   })
+}
+
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
 }
