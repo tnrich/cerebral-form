@@ -1,10 +1,10 @@
 #Cerebral Form
 
-Usage:
+##Usage:
 `npm i -S cerebral-form`
 
 ```js
-import InputWrapper from 'cerebral-form/InputWrapper';
+import InputWrapper from 'cerebral-form/InputWrapper'; //The wrapper is for react only, but could easily be ported to another UI lib
 var MyInput = InputWrapper(function MyInput (props) {
   return (
         <input {...props}>
@@ -33,9 +33,14 @@ A list of available props available to the input are:
 - hasError: true
 - visited: true
 
-Hooking up the module + setting up validation: 
+##Checking if a form has been completed: 
+import {formCompleted} from 'cerebral-form'; //this is a cerebral computed function
+@Cerebral(formCompleted: formCompleted('form1')}) //use it like a normal computed function, passing the name of the form
+
+
+##Hooking up the module + setting up validation: 
 ```js
-import CerebralForm, {formCompleted} from 'cerebral-form';
+import CerebralForm from 'cerebral-form';
 controller.modules({
 	cerebralForm: CerebralForm({
 		validation: { //define simple validations here (no built-in validation yet..)
