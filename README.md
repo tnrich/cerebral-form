@@ -1,8 +1,10 @@
 #Cerebral Form
 
 Usage:
-```
-import InputWrapper from '../cerebral-form/InputWrapper';
+`npm i -S cerebral-form`
+
+```js
+import InputWrapper from 'cerebral-form/InputWrapper';
 var MyInput = InputWrapper(function MyInput (props) {
   return (
         <input {...props}>
