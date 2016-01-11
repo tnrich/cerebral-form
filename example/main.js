@@ -13,7 +13,7 @@ import CerebralForm, {formCompleted} from '../CerebralForm';
 controller.modules({
 	cerebralForm: CerebralForm({
 		//example validation
-		simpleValidation: {
+		validation: {
 			...validator,
 			divisibleBy5: function (value,state) {
 				if (value % 5 === 0) {

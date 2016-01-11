@@ -1,5 +1,5 @@
 export default (options = {}) => {
-	var {simpleValidation = {}, asyncValidation={} } = options; 
+	var {validation = {}, asyncValidation={} } = options; 
 	var validationNames = [];
 	Object.keys(asyncValidation).forEach(function(key) {
 		validationNames.push(key)
@@ -9,7 +9,7 @@ export default (options = {}) => {
 	})
 	function doSimpleValidation ({input: {value, errors={}, validations={}},state,output}) {
 		Object.keys(validations).forEach(function (key) {
-			var valid = simpleValidation[key](value, state)
+			var valid = validation[key](value, state)
 			if (valid) {
 				delete errors[key]
 			} else {
