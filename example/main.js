@@ -6,12 +6,12 @@ import Controller from 'cerebral';
 import Model from 'cerebral-model-baobab';
 import ObjectInspector from 'react-object-inspector';
 import validator from 'validator';
-import InputWrapper from '../CerebralForm/InputWrapper';
+import InputWrapper from '../src/InputWrapper';
 var controller = Controller(Model({}));
-import CerebralForm, {formCompleted} from '../CerebralForm';
+import cerebralForm, {formCompleted} from '../src';
 
 controller.modules({
-	cerebralForm: CerebralForm({
+	cerebralForm: cerebralForm({
 		//example validation
 		validation: {
 			...validator,
