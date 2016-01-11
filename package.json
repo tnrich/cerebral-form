@@ -1,11 +1,11 @@
 {
   "name": "cerebral-form",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A boilerplate for Cerebral",
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cerebral/cerebral-form.git"
+    "url": "git+https://github.com/tnrich/cerebral-form.git"
   },
   "keywords": [
     "cerebral",
@@ -16,7 +16,7 @@
   "author": "Thomas Rich",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cerebral/cerebral-form/issues"
+    "url": "https://github.com/tnrich/cerebral-form/issues"
   },
   "eslintConfig": {
     "env": {
@@ -25,7 +25,7 @@
       "es6": true
     }
   },
-  "homepage": "https://github.com/cerebral/cerebral-form",
+  "homepage": "https://github.com/tnrich/cerebral-form",
   "scripts": {
     "test": "",
     "start": "babel-node server",
