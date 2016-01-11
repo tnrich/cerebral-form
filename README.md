@@ -17,7 +17,7 @@ var MyInput = InputWrapper(function MyInput (props) {
   path: ['path','you','choose'], //the only required property. Input state is stored at this path
   form: 'form1', //or  ['form1','form2'] if the input is part of a larger form
   validation: {
-    'isEmail': "Please provide a valid email" //name and message of desired validation
+    'isEmail': "Please provide a valid email", //name and message of desired validation
     'userDefined': "This field must match another user defined field"
   },
   asyncValidation: 'isNonGmail', //can only register 1 async validation per form
