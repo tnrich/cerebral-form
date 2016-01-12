@@ -15,25 +15,37 @@ export default function InputWrapper (ComposedComponent, options) {
         this.props.signals[this.props.modules.cerebralModuleForm.name].removeFromForm(options)
       }
       render() {
-        var {cerebralInput, ...other} = this.props;
+        var {cerebralInput = {}, ...other} = this.props;
         //prepare the various "bindings"
-        var additionalProps = {
-            onChange: (event) => {
-              this.props.signals[this.props.modules.cerebralModuleForm.name].change.sync({
-                value: event.target.value,
-                ...options
-              })
-            },
-            onBlur: (event) => {
-              this.props.signals[this.props.modules.cerebralModuleForm.name].blur({
-                value: event.target.value,
-                ...options
-              })
-              return true
-            },
-            ...cerebralInput,
+        var onChange = (event) => {
+          this.props.signals[this.props.modules.cerebralModuleForm.name].change.sync({
+            value: event.target ? event.target.value : event,
+            ...options
+          })
         }
-        return <ComposedComponent {...other} {...additionalProps} />;
+        var onBlur = (event) => {
+          this.props.signals[this.props.modules.cerebralModuleForm.name].blur({
+            value: event.target ? event.target.value : event,
+            ...options
+          })
+          return true
+        }
+        var {value} = cerebralInput
+        var formProps = {
+          ...cerebralInput,
+          onChange,
+          onBlur,
+          // input: {
+          //   onChange,
+          //   onBlur,
+          //   value
+          // },
+          // radio: {
+          //   onChange,
+          //   value
+          // },
+        }
+        return <ComposedComponent {...other} {...formProps} />;
       }
     }, {
     cerebralInput: options.path,

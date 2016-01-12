@@ -7,34 +7,40 @@ import Model from 'cerebral-model-baobab';
 import ObjectInspector from 'react-object-inspector';
 import validator from 'validator';
 import InputWrapper from '../src/InputWrapper';
-var controller = Controller(Model({}));
-import cerebralForm, {formCompleted} from '../src';
-
+var controller = Controller(Model({
+  activeForm: '1'
+}));
+import CerebralForm, {formCompleted} from '../src';
 controller.modules({
-	cerebralForm: cerebralForm({
-		//example validation
-		validation: {
-			...validator,
-			divisibleBy5: function (value,state) {
-				if (value % 5 === 0) {
-					return true
-				} else {
-					return false
-				}
-			}
-		},
-		asyncValidation: {
+  cerebralForm: CerebralForm({
+    //example validation
+    validation: {
+      ...validator,
+      divisibleBy5: function (value, state, options) {
+        if (value % 5 === 0) {
+          return true
+        } else {
+          return false
+        }
+      },
+      matches: function (value, state, options) {
+        if (value === state.get(options.path).value) {
+          return true
+        } else {
+          return false
+        }
+      }
+    },
+    asyncValidation: {
       isNonGmail: [
         [function({
           input, output
         }) {
           //fake talking to backend
           setTimeout(function() {
-            if (input.value.indexOf('gmail') > -1) {
+            if (input.value && input.value.indexOf('gmail') > -1) {
               output({
-                asyncError: {
-                  message: 'The email ' + input.value + ' cannot have gmail in the name'
-                }
+                asyncError: 'The email ' + input.value + ' cannot have gmail in the name'
               })
             } else {
               output()
@@ -42,30 +48,41 @@ controller.modules({
           }, 300)
         }]
       ]
-		}
-	}),
+    }
+  }),
 });
 
-var Input1 = InputWrapper(function Input1 (props) {
+
+
+var VerifyEmail = InputWrapper(function VerifyEmail (props) {
+  console.log('rendinger');
+  var {errors={} } = props;
   return (
     <div>
       <br/>
-      <h3>Input props: </h3>
-      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ props } />
+      <h3>Verify Email (no gmail allowed): </h3>
+      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
       <br/>
         <input style={{background: props.hasError?'red':'none'}} {...props}>
         </input>
-
+        {
+          Object.keys(errors).map(function(key) {
+            return errors[key];
+          })
+        }
     </div>
     );
 }, {
-  path: ['path'],
+  path: ['verifyEmail'],
   form: 'form1',
   validateImmediately: false,
-  asyncValidation: 'isNonGmail',
   validations: {
-    'isEmail': "Please provide a valid email"
-  }
+    'matches': {
+      path: ['email'],
+      message: "Make sure the emails match"
+    }
+  },
+  // linkTo: ['email']
 })
 
 var ShowAnotherGroupOfInputs = InputWrapper(function ShowAnotherGroupOfInputs (props) {
@@ -73,7 +90,7 @@ var ShowAnotherGroupOfInputs = InputWrapper(function ShowAnotherGroupOfInputs (p
     <div>
     <br/>
     <h3>Input props: </h3>
-      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ props } />
+      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
       <br/>
       <radiogroup onChange={props.onChange}>
         <input type="radio" name="showOthers" value="showMore" checked={props.value==="showMore"}/> Add additional form elements <br/>
@@ -83,12 +100,12 @@ var ShowAnotherGroupOfInputs = InputWrapper(function ShowAnotherGroupOfInputs (p
     );
 }, {path: ['showMore'], defaultValue: 'showLess', form: 'form1'})
 
-var Input2 = InputWrapper(function Input2 (props) {
+var RadioGroup = InputWrapper(function RadioGroup (props) {
   return (
     <div>
     <br/>
     <h3>Input props: </h3>
-      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ props } />
+      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
       <br/>
       <radiogroup onChange={props.onChange}>
         <input type="radio" name="happy" value="happy" checked={props.value==="happy"}/> Happy <br/>
@@ -97,14 +114,34 @@ var Input2 = InputWrapper(function Input2 (props) {
       </radiogroup>
     </div>
     );
-}, {path: ['path4'], form: 'form1'})
+}, {path: ['radiogroup'], form: 'form1'})
+
+var UnconventionalRadioGroup = InputWrapper(function UnconventionalRadioGroup (props) {
+  return (
+    <div>
+    <br/>
+    <h3>Input props: </h3>
+      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
+      <br/>
+        <button onClick={() => {
+                 props.onChange("happy")
+        }} style={{background: props.value==="happy" ? 'blue' : 'inherit'}}> Happy  </button>
+        <button onClick={() => {
+                 props.onChange("unhappy")
+        }} style={{background: props.value==="unhappy" ? 'blue' : 'inherit'}}> Unhappy </button>
+        <button onClick={() => {
+                 props.onChange("other")
+        }} style={{background: props.value==="other" ? 'blue' : 'inherit'}}> Other </button>
+    </div>
+    );
+}, {path: ['unconventionalRadiogroup'], form: 'form1'})
 
 var Input3 = InputWrapper(function Input3 (props) {
   return (
     <div>
       <br/>
       <h3>Input props: </h3>
-      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ props } />
+      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
       <br/>
     <select {...props}>
       <option value="volvo">Volvo</option>
@@ -117,30 +154,60 @@ var Input3 = InputWrapper(function Input3 (props) {
     );
 }, {path: ['path3'], form: 'form1', defaultValue: 'audi', validationName: 'email'})
 
-import each from 'lodash/collection/each';
-
-@Cerebral({showMore: ['showMore'], formCompleted: formCompleted('form1')})
+@Cerebral({showMore: ['showMore'], form: ['activeForm'], formCompleted: formCompleted('form1')})
 class FormExample extends React.Component {
   render() {
-    var showMore = this.props.showMore && (this.props.showMore.value === 'showMore')
-    console.log('rendering!');
+    debugger;
+    var Email = InputWrapper(function Email (props) {
+    var {errors={} } = props;
     return (
       <div>
-        <Input1/> 
         <br/>
-        <ShowAnotherGroupOfInputs/> 
-        { showMore
-           &&
-          <div>
-          <Input2/>
-          <br/>
-          <Input3/>
-          </div>
-        }
+        <h3>Email (no gmail allowed): </h3>
+        <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
         <br/>
-        Completed? {this.props.formCompleted ? ' true' : ' false'}
+          <input style={{background: props.hasError?'red':'none'}} {...props}>
+          </input>
+          {Object.keys(errors).map(function (key) {
+            return errors[key];
+          })}
+      </div>
+      );
+  }, {
+    path: [this.props.form, 'email'],
+    form: 'form1',
+    validateImmediately: false,
+    asyncValidation: 'isNonGmail',
+    validations: {
+      'isEmail': "Please provide a valid email",
+    },
+    linkTo: ['verifyEmail']
+  })
+    var showMore = this.props.showMore && (this.props.showMore.value === 'showMore')
+    return (
+      <div>
+        <Email/> 
+        <br/>
+        <VerifyEmail/> 
+        <br/>
+        <UnconventionalRadioGroup/>
+        <div style={{background: 'grey'}}>
+          <ShowAnotherGroupOfInputs/> 
+          { showMore
+             &&
+            <div>
+            <RadioGroup/>
+            <br/>
+            <Input3/>
+            </div>
+          }
+        </div>
+        <br/>
         <h3>Component props: </h3>
         <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ this.props } />
+        <br/>
+        Completed? {this.props.formCompleted ? ' true' : ' false'}
+        <br/>
         <button disabled={!this.props.formCompleted}>Submit</button>
       </div>
     );
