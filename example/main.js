@@ -52,10 +52,35 @@ controller.modules({
   }),
 });
 
-
+var Email = InputWrapper(function Email (props) {
+    var {errors={} } = props;
+    return (
+      <div>
+        <br/>
+        <h3>Email (no gmail allowed): </h3>
+        <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
+        <br/>
+          <input style={{background: props.hasError?'red':'none'}} {...props}>
+          </input>
+          {Object.keys(errors).map(function (key) {
+            return errors[key];
+          })}
+      </div>
+      );
+  }, function (props) {
+    return {
+    path: [props.path9, 'email'],
+    form: 'form1',
+    validateImmediately: false,
+    asyncValidation: 'isNonGmail',
+    validations: {
+      'isEmail': "Please provide a valid email",
+    },
+    linkTo: [props.path9, 'verifyEmail']
+  }
+  })
 
 var VerifyEmail = InputWrapper(function VerifyEmail (props) {
-  console.log('rendinger');
   var {errors={} } = props;
   return (
     <div>
@@ -72,18 +97,32 @@ var VerifyEmail = InputWrapper(function VerifyEmail (props) {
         }
     </div>
     );
-}, {
-  path: ['verifyEmail'],
-  form: 'form1',
-  validateImmediately: false,
-  validations: {
-    'matches': {
-      path: ['email'],
-      message: "Make sure the emails match"
-    }
-  },
+}, function (props) {
+  return {
+    path: [props.path9, 'verifyEmail'],
+    form: 'form1',
+    validateImmediately: false,
+    validations: {
+      'matches': {
+        path: [props.path9,'email'],
+        message: "Make sure the emails match"
+      }
+    },
+  }
+}
+
+// {
+//   path: ['verifyEmail'],
+//   form: 'form1',
+//   validateImmediately: false,
+//   validations: {
+//     'matches': {
+//       path: ['email'],
+//       message: "Make sure the emails match"
+//     }
+//   },
   // linkTo: ['email']
-})
+)
 
 var ShowAnotherGroupOfInputs = InputWrapper(function ShowAnotherGroupOfInputs (props) {
   return (
@@ -157,38 +196,13 @@ var Input3 = InputWrapper(function Input3 (props) {
 @Cerebral({showMore: ['showMore'], form: ['activeForm'], formCompleted: formCompleted('form1')})
 class FormExample extends React.Component {
   render() {
-    debugger;
-    var Email = InputWrapper(function Email (props) {
-    var {errors={} } = props;
-    return (
-      <div>
-        <br/>
-        <h3>Email (no gmail allowed): </h3>
-        <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
-        <br/>
-          <input style={{background: props.hasError?'red':'none'}} {...props}>
-          </input>
-          {Object.keys(errors).map(function (key) {
-            return errors[key];
-          })}
-      </div>
-      );
-  }, {
-    path: [this.props.form, 'email'],
-    form: 'form1',
-    validateImmediately: false,
-    asyncValidation: 'isNonGmail',
-    validations: {
-      'isEmail': "Please provide a valid email",
-    },
-    linkTo: ['verifyEmail']
-  })
+    
     var showMore = this.props.showMore && (this.props.showMore.value === 'showMore')
     return (
       <div>
-        <Email/> 
+        <Email path9='hahah'/> 
         <br/>
-        <VerifyEmail/> 
+        <VerifyEmail path9='hahah'/> 
         <br/>
         <UnconventionalRadioGroup/>
         <div style={{background: 'grey'}}>

@@ -2,17 +2,26 @@
 import {HOC} from 'cerebral-view-react';
 import React, { Component } from "react";
 //take in a user component
-export default function InputWrapper (ComposedComponent, options) {
+export default function InputWrapper (ComposedComponent, opts) {
+  var finalOpts;
+  if (typeof opts !== "function") {
+    finalOpts = opts;
+  }
+  function getCerebralPaths (options) {
+    options = {...options, cerebralFormId}
+    return {
+      cerebralInput: options.path
+    }
+  }
   var cerebralFormId = guid();
-  options = {...options, cerebralFormId}
   //wrap a helper component in cerebral's HOC
   return HOC(class Connector extends Component {
       componentWillMount() {
-        this.props.signals[this.props.modules.cerebralModuleForm.name].init(options)
-        this.props.signals[this.props.modules.cerebralModuleForm.name].addToForm(options)
+        this.props.signals[this.props.modules.cerebralModuleForm.name].init(finalOpts)
+        this.props.signals[this.props.modules.cerebralModuleForm.name].addToForm(finalOpts)
       }
       componentWillUnmount() {
-        this.props.signals[this.props.modules.cerebralModuleForm.name].removeFromForm(options)
+        this.props.signals[this.props.modules.cerebralModuleForm.name].removeFromForm(finalOpts)
       }
       render() {
         var {cerebralInput = {}, ...other} = this.props;
@@ -20,13 +29,13 @@ export default function InputWrapper (ComposedComponent, options) {
         var onChange = (event) => {
           this.props.signals[this.props.modules.cerebralModuleForm.name].change.sync({
             value: event.target ? event.target.value : event,
-            ...options
+            ...finalOpts
           })
         }
         var onBlur = (event) => {
           this.props.signals[this.props.modules.cerebralModuleForm.name].blur({
             value: event.target ? event.target.value : event,
-            ...options
+            ...finalOpts
           })
           return true
         }
@@ -47,10 +56,14 @@ export default function InputWrapper (ComposedComponent, options) {
         }
         return <ComposedComponent {...other} {...formProps} />;
       }
-    }, {
-    cerebralInput: options.path,
-    //we could also take in other user-defined cerebral bindings here, but it seems like they can just wrap with cerebral like normal if they need to
-  })
+    }, finalOpts ? 
+    getCerebralPaths(finalOpts) 
+    : 
+    function (props) {
+      finalOpts = opts(props)
+      return getCerebralPaths(finalOpts);
+    }
+  )
 }
 
 function guid() {
