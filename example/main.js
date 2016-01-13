@@ -13,6 +13,9 @@ var controller = Controller(Model({
 import CerebralForm, {formCompleted} from '../src';
 controller.modules({
   cerebralForm: CerebralForm({
+    formCompletedPaths: { //temporary work around
+        'form1': ['pages','SelectProductPage','completed']
+    }, 
     //example validation
     validation: {
       ...validator,

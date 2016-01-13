@@ -30,6 +30,20 @@ export default (options = {}) => {
 		output({errors})
 	}
 
+	function checkIfFormsAreCompleted({
+		input,
+		state
+	}) {
+		input.associatedForms.forEach(function(formName) {
+			state.set(['cerebralForm', formName, 'completed'], state.get(formCompleted(formName)))
+			if (options.formCompletedPaths) {
+				if (options.formCompletedPaths[formName]) {
+					state.set(options.formCompletedPaths[formName], state.get(formCompleted(formName)))
+				}
+			}
+		})
+	}
+
 	// function validateOthers({input: {linkTo}, state, output}) {
 	// 	if (linkTo) {
 	// 		var input = state.get(linkTo);
@@ -183,14 +197,7 @@ function getAssociatedForms ({input, output}) {
 	output({associatedForms})
 }
 
-function checkIfFormsAreCompleted({
-	input,
-	state
-}) {
-	input.associatedForms.forEach(function(formName) {
-		state.set(['cerebralForm', formName, 'completed'], state.get(formCompleted(formName)))
-	})
-}
+
 
 function makeSurePathIsPresent({input, state, output}) {
 	if (!state.get([...input.path])) {
