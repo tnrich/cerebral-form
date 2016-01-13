@@ -74,9 +74,9 @@ export default (options = {}) => {
 
 	function linkedInputs ({input, state, output}) {
 		if (input.linkTo) {
-			output.validate({path: input.linkTo, ...state.get(input.linkTo)})
+			output.validate({originalInputPath: input.path, path: input.linkTo, ...state.get(input.linkTo)})
 		} else {
-			output.doNotValidate()
+			output.doNotValidate({originalInputPath: input.path})
 		}
 	}
 	linkedInputs.outputs = ['validate', 'doNotValidate']
@@ -130,7 +130,7 @@ export default (options = {}) => {
 		// Add signals
 		module.alias('cerebralModuleForm');
 		module.signals({
-		init: [function({input, state}) {
+		initializeInput: [function({input, state}) {
 			var inputState = state.get(input.path);
 			if (!inputState) {
 				state.set([...input.path], {
@@ -144,43 +144,53 @@ export default (options = {}) => {
 				}
 			}
 		}],
-		addToForm: [function({input, state}) {
-			var forms = input.form
-			if (!Array.isArray(input.form)) {
-				forms = [input.form]
-			}
-			forms.forEach(function(form){
+		addToForm: [getAssociatedForms,
+		function({input, state}) {
+			input.associatedForms.forEach(function(form){
 				state.set(['cerebralForm', form, 'paths', input.path.join('%.%')],true)
 			});
-		}],
-		removeFromForm: [function({input, state}) {
-			var forms = input.form
-			if (!Array.isArray(input.form)) {
-				forms = [input.form]
-			}
-			forms.forEach(function(form){
+		},checkIfFormsAreCompleted],
+		removeFromForm: [getAssociatedForms,
+		function({input, state}) {
+			input.associatedForms.forEach(function(form){
 				state.unset(['cerebralForm', form, 'paths', input.path.join('%.%')])
 			});
-		}],
+		},checkIfFormsAreCompleted],
 		change: [
+			getAssociatedForms,
 			setValue,
 			...runValidationChain,
 			...validateLinked,
+			checkIfFormsAreCompleted
 		],
 		focus: [],
 		blur: [
+			getAssociatedForms,
 			makeSurePathIsPresent,
 			function({input, state}) {
 				state.set([...input.path, 'visited'], true)
 			},
 			...runValidationChain,
 			...validateLinked,
+			checkIfFormsAreCompleted
 		]});
 		return {};
 	};
 }
 
+function getAssociatedForms ({input, output}) {
+	var associatedForms = Array.isArray(input.form) ? input.form : [input.form]
+	output({associatedForms})
+}
 
+function checkIfFormsAreCompleted({
+	input,
+	state
+}) {
+	input.associatedForms.forEach(function(formName) {
+		state.set(['cerebralForm', formName, 'completed'], state.get(formCompleted(formName)))
+	})
+}
 
 function makeSurePathIsPresent({input, state, output}) {
 	if (!state.get([...input.path])) {
@@ -189,9 +199,7 @@ function makeSurePathIsPresent({input, state, output}) {
 	output({value: state.get([...input.path, 'value'])})
 }
 
-
-
-export function formCompleted(formName) {
+function formCompleted(formName) {
 	return function(get) {
 		var inputs = getInputs(formName)(get)
 		var completed = true;
@@ -214,4 +222,22 @@ function getInputs(formName) {
 		return data
 	}
 }
+
+export {formCompleted}
+
+
+// function formCompleted(formName) {
+// 	return function(get) {
+// 		var inputPaths = get(['cerebralForm', formName, 'paths']) || {};
+// 		var completed = true;
+// 		Object.keys(inputPaths).some(function(path) {
+// 			var input = get(path.split('%.%'))
+// 			if (!input.completed) {
+// 				completed = false
+// 				return true
+// 			}
+// 		});
+// 		return data
+// 	}
+// }
 

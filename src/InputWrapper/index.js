@@ -17,7 +17,7 @@ export default function InputWrapper (ComposedComponent, opts) {
   //wrap a helper component in cerebral's HOC
   return HOC(class Connector extends Component {
       componentWillMount() {
-        this.props.signals[this.props.modules.cerebralModuleForm.name].init(finalOpts)
+        this.props.signals[this.props.modules.cerebralModuleForm.name].initializeInput(finalOpts)
         this.props.signals[this.props.modules.cerebralModuleForm.name].addToForm(finalOpts)
       }
       componentWillUnmount() {
@@ -28,13 +28,13 @@ export default function InputWrapper (ComposedComponent, opts) {
         //prepare the various "bindings"
         var onChange = (event) => {
           this.props.signals[this.props.modules.cerebralModuleForm.name].change.sync({
-            value: event.target ? event.target.value : event,
+            value: event.target ? (event.target.type === 'checkbox' ? event.target.checked : event.target.value) : event,
             ...finalOpts
           })
         }
         var onBlur = (event) => {
           this.props.signals[this.props.modules.cerebralModuleForm.name].blur({
-            value: event.target ? event.target.value : event,
+            value: event.target ? (event.target.type === 'checkbox' ? event.target.checked : event.target.value) : event,
             ...finalOpts
           })
           return true
@@ -44,6 +44,7 @@ export default function InputWrapper (ComposedComponent, opts) {
           ...cerebralInput,
           onChange,
           onBlur,
+          checked: value
           // input: {
           //   onChange,
           //   onBlur,

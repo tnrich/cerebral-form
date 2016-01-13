@@ -48,6 +48,8 @@ controller.modules({
           }, 300)
         }]
       ]
+    }, addFormDataToTreeAsBaobabMonkey: {
+      form1: ['all','form','data']
     }
   }),
 });
@@ -62,6 +64,7 @@ var Email = InputWrapper(function Email (props) {
         <br/>
           <input style={{background: props.hasError?'red':'none'}} {...props}>
           </input>
+          Email please
           {Object.keys(errors).map(function (key) {
             return errors[key];
           })}
@@ -175,6 +178,23 @@ var UnconventionalRadioGroup = InputWrapper(function UnconventionalRadioGroup (p
     );
 }, {path: ['unconventionalRadiogroup'], form: 'form1'})
 
+var Checkbox = InputWrapper(function Checkbox (props) {
+  return (
+    <div className='productOptionBox'>
+      <br/>
+      <h3>
+      Checkbox props: 
+      </h3>
+      <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
+        <input {...props} type="checkbox"/> Yes <br/>
+    </div>
+    );
+}, {
+  path: ['genes','shipWithGlycerolStocks'],
+  form: 'SelectProductPage',
+  defaultValue: true,
+})
+
 var Input3 = InputWrapper(function Input3 (props) {
   return (
     <div>
@@ -193,7 +213,7 @@ var Input3 = InputWrapper(function Input3 (props) {
     );
 }, {path: ['path3'], form: 'form1', defaultValue: 'audi', validationName: 'email'})
 
-@Cerebral({showMore: ['showMore'], form: ['activeForm'], formCompleted: formCompleted('form1')})
+@Cerebral({showMore: ['showMore'], form: ['activeForm'], formCompleted: ['cerebralForm','form1','completed']})
 class FormExample extends React.Component {
   render() {
     
@@ -205,6 +225,7 @@ class FormExample extends React.Component {
         <VerifyEmail path9='hahah'/> 
         <br/>
         <UnconventionalRadioGroup/>
+        <Checkbox/>
         <div style={{background: 'grey'}}>
           <ShowAnotherGroupOfInputs/> 
           { showMore
