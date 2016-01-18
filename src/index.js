@@ -10,6 +10,7 @@ export default (options = {}) => {
 	function doSimpleValidation ({input: {path}, state,output}) {
 		var {value, validations={}} = state.get(path)
 		var errors={}
+		debugger;
 		Object.keys(validations).forEach(function (key) {
 			var message;
 			var options;
@@ -20,7 +21,7 @@ export default (options = {}) => {
 				options = validations[key] || {}
 				message = options.message
 			}
-			var valid = validation[key](value, state, options)
+			var valid = validation[key](value, state, options, path)
 			if (valid) {
 				delete errors[key]
 			} else {
@@ -196,8 +197,6 @@ function getAssociatedForms ({input, output}) {
 	var associatedForms = Array.isArray(input.form) ? input.form : [input.form]
 	output({associatedForms})
 }
-
-
 
 function makeSurePathIsPresent({input, state, output}) {
 	if (!state.get([...input.path])) {

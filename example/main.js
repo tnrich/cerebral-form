@@ -6,6 +6,7 @@ import Controller from 'cerebral';
 import Model from 'cerebral-model-baobab';
 import ObjectInspector from 'react-object-inspector';
 import validator from 'validator';
+import phoneformat from 'phoneformat.js';
 import InputWrapper from '../src/InputWrapper';
 var controller = Controller(Model({
   activeForm: '1'
@@ -32,6 +33,11 @@ controller.modules({
         } else {
           return false
         }
+      },
+      formatPhoneNumber: function (value, state, options, path) {
+        debugger;
+        state.set([...path, 'value'], phoneformat.formatE164(value))
+        return true //always return true since we're just doing formatting
       }
     },
     asyncValidation: {
@@ -57,6 +63,30 @@ controller.modules({
   }),
 });
 
+var Phone = InputWrapper(function Phone (props) {
+    var {errors={} } = props;
+    return (
+      <div>
+        <br/>
+        <h3>Phone Number: </h3>
+        <ObjectInspector initialExpandedPaths={['root', 'root.errors']} data={ {value: props.value, completed: props.completed, visited: props.visited, hasError: props.hasError, errors: props.errors} } />
+        <br/>
+          <input style={{background: props.hasError?'red':'none'}} {...props}>
+          </input>
+          {Object.keys(errors).map(function (key) {
+            return errors[key];
+          })}
+      </div>
+      );
+  }, function (props) {
+    return {
+    path: ['phoneNumber'],
+    form: 'form1',
+    validations: {
+      'formatPhoneNumber': "",
+    },
+  }
+})
 var Email = InputWrapper(function Email (props) {
     var {errors={} } = props;
     return (
@@ -84,7 +114,7 @@ var Email = InputWrapper(function Email (props) {
     },
     linkTo: [props.path9, 'verifyEmail']
   }
-  })
+})
 
 var VerifyEmail = InputWrapper(function VerifyEmail (props) {
   var {errors={} } = props;
@@ -223,6 +253,7 @@ class FormExample extends React.Component {
     var showMore = this.props.showMore && (this.props.showMore.value === 'showMore')
     return (
       <div>
+        <Phone/>
         <Email path9='hahah'/> 
         <br/>
         <VerifyEmail path9='hahah'/> 
