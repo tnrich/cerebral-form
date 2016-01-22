@@ -149,7 +149,7 @@ export default (options = {}) => {
 			if (!inputState) {
 				state.set([...input.path], {
 					value: input.defaultValue,
-					completed: input.defaultValue ? true : false,
+					completed: input.defaultValue !== undefined ? true : false,
 					...input
 				})
 			} else {
